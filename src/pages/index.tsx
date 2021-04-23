@@ -1,12 +1,14 @@
 /* eslint-disable camelcase */
 import { GetStaticProps } from 'next';
 import ptbr, { format, parseISO } from 'date-fns';
-
+import Image from 'next/image';
+import styles from './home.module.scss';
 import api from '../services/api';
 import convertDurationToTimeString from '../utils/convert_duration_to_timestring';
 
 type HomeProps = {
-  episodes: Array<Episode>;
+  latestEpisodes: Array<Episode>;
+  allEpisodes: Array<Episode>;
 };
 
 type Episode = {
@@ -21,8 +23,37 @@ type Episode = {
   url: string;
 };
 
-export default function Home({ episodes }: HomeProps) {
-  return <p>{JSON.stringify(episodes)}</p>;
+export default function Home({ latestEpisodes, allEpisodes }: HomeProps) {
+  return (
+    <div className={styles.homepage}>
+      <section className={styles.latestEpisodes}>
+        <h2>Últimos lançamentos</h2>
+        <ul>
+          {latestEpisodes.map((episode) => (
+            <li key={episode.id}>
+              <Image
+                width={192}
+                height={192}
+                objectFit="cover"
+                src={episode.thumbnail}
+                alt={episode.title}
+              />
+              <div className={styles.episodeDetails}>
+                <a href="/">{episode.title} </a>
+                <p>{episode.members} </p>
+                <span>{episode.publishedAt} </span>
+                <span>{episode.durationAsString} </span>
+              </div>
+
+              <button type="button">
+                <img src="/play-green.svg" alt="Tocar episódio" />
+              </button>
+            </li>
+          ))}
+        </ul>
+      </section>
+    </div>
+  );
 }
 
 type IRequest = {
@@ -48,7 +79,7 @@ export const getStaticProps: GetStaticProps = async () => {
     },
   });
 
-  const episodes = data.map((episode) => ({
+  const allEpisodes = data.map((episode) => ({
     id: episode.id,
     title: episode.title,
     members: episode.members,
@@ -64,9 +95,12 @@ export const getStaticProps: GetStaticProps = async () => {
     url: episode.file.url,
   }));
 
+  const latestEpisodes = allEpisodes.splice(0, 2);
+
   return {
     props: {
-      episodes,
+      latestEpisodes,
+      allEpisodes,
     },
     revalidate: 60 * 60 * 8,
   };
