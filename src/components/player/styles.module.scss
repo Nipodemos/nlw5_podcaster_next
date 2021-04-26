@@ -22,7 +22,7 @@
 
   footer {
     align-self: stretch;
-    &.empty {
+    &.empty .progress {
       opacity: 0.5;
     }
   }
@@ -116,9 +116,26 @@
     -ms-transition: filter 0.2s;
     -o-transition: filter 0.2s;
 
+    &:disabled {
+      cursor: default;
+      opacity: 0.5;
+    }
+
     &:hover:not(:disabled) {
-      filter: brightness(0.6);
-      -webkit-filter: brightness(0.8);
+      filter: brightness(0.7);
+      -webkit-filter: brightness(0.7);
+    }
+
+    &.isActive {
+      filter: invert(0.35) sepia(1) saturate(3) hue-rotate(100deg);
+      -webkit-filter: invert(0.35) sepia(1) saturate(3) hue-rotate(100deg);
+    }
+
+    &.isActive:hover {
+      filter: brightness(0.6) invert(0.35) sepia(1) saturate(3)
+        hue-rotate(100deg);
+      -webkit-filter: brightness(0.6) invert(0.35) sepia(1) saturate(3)
+        hue-rotate(100deg);
     }
 
     &.playButton {
@@ -131,15 +148,16 @@
       -o-border-radius: 1rem;
       -moz-border-radius: 1rem;
       background-color: var(--purple-400);
+      transition: filter 0.2s;
+      -webkit-transition: filter 0.2s;
+      -moz-transition: filter 0.2s;
+      -ms-transition: filter 0.2s;
+      -o-transition: filter 0.2s;
 
       &:hover:not(:disabled) {
         filter: brightness(0.95);
         -webkit-filter: brightness(0.95);
       }
-    }
-
-    &:disabled {
-      cursor: default;
     }
   }
 }
